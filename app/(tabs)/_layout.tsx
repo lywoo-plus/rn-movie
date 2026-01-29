@@ -1,27 +1,27 @@
-import { icons } from '@/constants/icons';
-import { images } from '@/constants/images';
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Image, ImageBackground, Text, View } from 'react-native';
+import { icons } from '@/constants/icons'
+import { images } from '@/constants/images'
+import { Tabs } from 'expo-router'
+import React from 'react'
+import { Image, ImageBackground, Text, View } from 'react-native'
 
 function TabIcon({ focused, icon, title }: any) {
   if (focused) {
     return (
       <ImageBackground
         source={images.highlight}
-        className="flex flex-row w-full flex-1 min-w-[112px] min-h-16 mt-4 justify-center items-center rounded-full overflow-hidden"
+        className="mt-4 flex min-h-16 w-full min-w-[112px] flex-1 flex-row items-center justify-center overflow-hidden rounded-full"
       >
         <Image source={icon} tintColor="#151312" className="size-5" />
-        <Text className="text-secondary text-base font-semibold ml-2">{title}</Text>
+        <Text className="ml-2 text-base font-semibold text-secondary">{title}</Text>
       </ImageBackground>
-    );
+    )
   }
 
   return (
-    <View className="size-full justify-center items-center mt-4 rounded-full">
+    <View className="mt-4 size-full items-center justify-center rounded-full">
       <Image source={icon} tintColor="#A8B5DB" className="size-5" />
     </View>
-  );
+  )
 }
 
 export default function _layout() {
@@ -89,5 +89,5 @@ export default function _layout() {
         }}
       />
     </Tabs>
-  );
+  )
 }
