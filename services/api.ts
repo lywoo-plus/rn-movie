@@ -26,5 +26,5 @@ export async function fetchMovie({ query }: { query: string }) {
 
   const data = await res.json()
 
-  return data.results
+  return (data.results ?? []) as Movie[]
 }

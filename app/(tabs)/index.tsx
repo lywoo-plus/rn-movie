@@ -36,7 +36,7 @@ export default function index() {
             {moviesLoading ? (
               <ActivityIndicator size="large" className="mt-10 self-center" />
             ) : moviesError ? (
-              <Text className="mt-5 text-red-500">{moviesError}</Text>
+              <Text className="mt-5 text-red-500">{moviesError.message}</Text>
             ) : (
               <View>
                 <View className="mt-5">
@@ -58,7 +58,6 @@ export default function index() {
           justifyContent: 'flex-start',
           gap: 20,
           paddingRight: 5,
-          marginBottom: 10,
         }}
       />
     </View>
