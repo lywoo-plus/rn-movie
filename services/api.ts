@@ -28,3 +28,21 @@ export async function fetchMovie({ query }: { query: string }) {
 
   return (data.results ?? []) as Movie[]
 }
+
+export async function fetchTrendingMovies() {
+  const url = `${TMDB_CONFIG.baseUrl}/movie/popular?page=1&offset=3`
+
+  const res = await fetch(url, {
+    method: 'get',
+    headers: TMDB_CONFIG.headers,
+  })
+
+  if (!res.ok) {
+    // @ts-ignore
+    throw new Error('Failed to fetch data', res.statusText)
+  }
+
+  const data = await res.json()
+
+  return (data.results ?? []) as Movie[]
+}

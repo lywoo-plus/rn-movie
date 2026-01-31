@@ -1,5 +1,6 @@
 import MovieCard from '@/components/MovieCard'
 import SearchBar from '@/components/SearchBar'
+import TrendingCard from '@/components/TrendingCard'
 import { icons } from '@/constants/icons'
 import { images } from '@/constants/images'
 import { fetchMovie } from '@/services/api'
@@ -43,6 +44,32 @@ export default function index() {
                   <SearchBar
                     placeholder="What are you looking for?"
                     onPress={() => router.push('/search')}
+                  />
+                </View>
+
+                <View className="w-full flex-1">
+                  <Text className="mb-3 mt-5 text-lg font-bold text-white">
+                    Trending Movies
+                  </Text>
+                  <FlatList
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    ItemSeparatorComponent={() => <View className="w-4" />}
+                    data={movies}
+                    refreshing={moviesLoading}
+                    keyExtractor={(item) => String(item.id)}
+                    renderItem={({ item, index }) => (
+                      <TrendingCard
+                        index={index}
+                        movie={{
+                          searchTerm: '',
+                          count: 0,
+                          movie_id: item.id,
+                          title: item.title,
+                          poster_url: item.poster_path,
+                        }}
+                      />
+                    )}
                   />
                 </View>
 
