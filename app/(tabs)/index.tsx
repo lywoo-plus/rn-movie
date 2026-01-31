@@ -3,7 +3,7 @@ import SearchBar from '@/components/SearchBar'
 import TrendingCard from '@/components/TrendingCard'
 import { icons } from '@/constants/icons'
 import { images } from '@/constants/images'
-import { fetchMovie } from '@/services/api'
+import { fetchMovies } from '@/services/api'
 import { useFetch } from '@/services/useFetch'
 import { useRouter } from 'expo-router'
 import React from 'react'
@@ -17,16 +17,16 @@ export default function index() {
     loading: moviesLoading,
     error: moviesError,
     refetch,
-  } = useFetch(() => fetchMovie({ query: '' }))
+  } = useFetch(() => fetchMovies({ query: '' }))
 
   return (
     <View className="flex-1 bg-primary">
       <Image source={images.bg} className="absolute z-0 w-full" />
 
       <FlatList
-        className="mb-24 flex-1 px-5"
+        className="flex-1 px-5"
         showsVerticalScrollIndicator={false}
-        data={moviesLoading || moviesError ? [] : movies}
+        data={movies}
         keyExtractor={(item) => String(item.id)}
         refreshing={moviesLoading}
         onRefresh={refetch}
