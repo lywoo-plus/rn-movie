@@ -1,16 +1,18 @@
+import { NAV_THEME } from '@/lib/theme'
+import { ThemeProvider } from '@react-navigation/native'
+import { PortalHost } from '@rn-primitives/portal'
 import { Stack } from 'expo-router'
-import { StatusBar } from 'react-native'
+import { StatusBar, useColorScheme } from 'react-native'
 import './global.css'
 
 export default function RootLayout() {
-  return (
-    <>
-      <StatusBar hidden />
+  const colorScheme = useColorScheme() ?? 'light'
 
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="movies/[id]" options={{ headerShown: false }} />
-      </Stack>
-    </>
+  return (
+    <ThemeProvider value={NAV_THEME[colorScheme]}>
+      <StatusBar backgroundColor={colorScheme === 'dark' ? 'light' : 'dark'} />
+      <Stack />
+      <PortalHost />
+    </ThemeProvider>
   )
 }
