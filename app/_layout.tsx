@@ -11,7 +11,11 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={NAV_THEME[colorScheme]}>
       <StatusBar backgroundColor={colorScheme === 'dark' ? 'light' : 'dark'} />
-      <Stack />
+
+      <Stack>
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      </Stack>
+
       <PortalHost />
     </ThemeProvider>
   )
