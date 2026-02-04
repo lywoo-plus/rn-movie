@@ -1,7 +1,9 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Text } from '@/components/ui/text'
+import { useCounterStore } from '@/stores/useCounterStore'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'expo-router'
 import React, { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { KeyboardAvoidingView, Platform, View } from 'react-native'
@@ -22,20 +24,26 @@ export default function AuthScreen() {
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: 'lywoo@gmail.com',
+      password: 'arstarst',
     },
   })
+
+  const router = useRouter()
 
   function onSubmit(data: any) {
     console.log('🪲🪲🪲🪲🪲')
     console.log(data)
     console.log('🪲🪲🪲🪲🪲')
+
+    router.navigate('/(protected)')
   }
 
   function handleSwitchAuthMode() {
     setMode((m) => (m === 'login' ? 'signup' : 'login'))
   }
+
+  const count = useCounterStore((s) => s.count)
 
   return (
     <KeyboardAvoidingView
@@ -45,6 +53,7 @@ export default function AuthScreen() {
       <View className="flex-1 justify-center gap-4 p-6">
         <Text className="mb-4 text-center text-2xl font-semibold">
           {mode === 'signup' ? 'Create Account' : 'Welcome Back'}
+          {count}
         </Text>
 
         <Controller
