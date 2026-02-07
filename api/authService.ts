@@ -9,10 +9,7 @@ export const authService = {
     }
 
     return {
-      token: '123456',
-      user: {
-        email,
-      },
-    }
+      email: 'lywoo@gmail.com',
+    } satisfies AuthUser
   },
 }

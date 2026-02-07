@@ -1,16 +1,17 @@
+import { useAuthStore } from '@/stores/useAuthStore'
 import { Stack, useRouter } from 'expo-router'
 import React, { useEffect } from 'react'
 
 export default function _layout() {
-  const isAuthenticated = true
+  const authUser = useAuthStore((s) => s.authUser)
 
   const router = useRouter()
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!authUser) {
       router.replace('/(auth)')
     }
-  }, [isAuthenticated])
+  }, [authUser])
 
   return (
     <Stack>

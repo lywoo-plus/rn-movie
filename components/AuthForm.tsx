@@ -2,6 +2,7 @@ import { authService } from '@/api/authService'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Text } from '@/components/ui/text'
+import { useAuthStore } from '@/stores/useAuthStore'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'expo-router'
 import React, { useState } from 'react'
@@ -26,7 +27,7 @@ export default function AuthForm() {
 
   const {
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     handleSubmit,
   } = useForm({
     resolver: zodResolver(schema),
@@ -36,10 +37,13 @@ export default function AuthForm() {
     },
   })
 
+  const login = useAuthStore((s) => s.login)
+
   async function onSubmit(data: any) {
     try {
-      await authService.login(data)
-      router.navigate('/(protected)')
+      const { email } = await authService.login(data)
+      login(email)
+      router.replace('/(protected)')
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Something went wrong'
       toast.error(message)
@@ -91,7 +95,7 @@ export default function AuthForm() {
           <Text className="text-xs text-red-600">{errors.password.message}</Text>
         )}
 
-        <Button className="w-full" onPress={handleSubmit(onSubmit)}>
+        <Button disabled={isSubmitting} className="w-full" onPress={handleSubmit(onSubmit)}>
           <Text>{mode === 'signup' ? 'Sign Up' : 'Sign In'}</Text>
         </Button>
 
