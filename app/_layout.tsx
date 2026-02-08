@@ -6,6 +6,7 @@ import { StatusBar, useColorScheme } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { Toaster } from 'sonner-native'
 
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 import './global.css'
 
 export default function RootLayout() {
@@ -13,18 +14,20 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={NAV_THEME[colorScheme]}>
-      <GestureHandlerRootView>
-        <StatusBar backgroundColor={colorScheme === 'dark' ? 'light' : 'dark'} />
+      <SafeAreaProvider>
+        <GestureHandlerRootView>
+          <StatusBar backgroundColor={colorScheme === 'dark' ? 'light' : 'dark'} />
 
-        <Stack>
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="(protected)" options={{ headerShown: false }} />
-        </Stack>
+          <Stack>
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="(protected)" options={{ headerShown: false }} />
+          </Stack>
 
-        <PortalHost />
+          <PortalHost />
 
-        <Toaster />
-      </GestureHandlerRootView>
+          <Toaster />
+        </GestureHandlerRootView>
+      </SafeAreaProvider>
     </ThemeProvider>
   )
 }
