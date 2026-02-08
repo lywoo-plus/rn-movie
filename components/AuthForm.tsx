@@ -18,6 +18,8 @@ const schema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters'),
 })
 
+type FormValues = z.infer<typeof schema>
+
 export default function AuthForm() {
   const router = useRouter()
 
@@ -31,7 +33,7 @@ export default function AuthForm() {
     control,
     formState: { errors, isSubmitting },
     handleSubmit,
-  } = useForm({
+  } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       email: 'lywoo@gmail.com',
@@ -41,7 +43,7 @@ export default function AuthForm() {
 
   const login = useAuthStore((s) => s.login)
 
-  async function onSubmit(data: any) {
+  async function onSubmit(data: FormValues) {
     try {
       const { email } = await authService.login(data)
       login(email)
