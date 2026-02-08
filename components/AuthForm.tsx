@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Text } from '@/components/ui/text'
 import { useAuthStore } from '@/stores/useAuthStore'
+import Feather from '@expo/vector-icons/Feather'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'expo-router'
 import React, { useState } from 'react'
@@ -96,7 +98,17 @@ export default function AuthForm() {
         )}
 
         <Button disabled={isSubmitting} className="w-full" onPress={handleSubmit(onSubmit)}>
-          <Text>{mode === 'signup' ? 'Sign Up' : 'Sign In'}</Text>
+          {mode === 'login' ? (
+            <>
+              <MaterialCommunityIcons name="login-variant" size={16} color="white" />
+              <Text>Sign In</Text>
+            </>
+          ) : (
+            <>
+              <Feather name="user-plus" size={16} color={'white'} />
+              <Text>Sign Up</Text>
+            </>
+          )}
         </Button>
 
         <Button className="w-full" variant={'ghost'} onPress={handleSwitchAuthMode}>
