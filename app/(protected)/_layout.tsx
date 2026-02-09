@@ -15,7 +15,7 @@ export default function _layout() {
           elevation: 0,
           shadowOpacity: 0,
         },
-        tabBarActiveTintColor: colors.black,
+        tabBarActiveTintColor: colors.green[600],
         tabBarInactiveTintColor: colors.gray[600],
       }}
     >

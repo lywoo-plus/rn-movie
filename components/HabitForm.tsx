@@ -60,6 +60,8 @@ export default function HabitForm() {
       className="flex-1"
     >
       <View className="flex-1 justify-center gap-4 p-6">
+        <Text className="mb-4 text-center text-2xl font-semibold">Add Habit</Text>
+
         <Controller
           control={control}
           name="title"
