@@ -46,6 +46,15 @@ export default function _layout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="setting"
+        options={{
+          title: 'Setting',
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="settings" size={size} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   )
 }
