@@ -1,3 +1,4 @@
+import SwipeableItem from '@/components/SwipeableItem'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -8,7 +9,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { useRouter } from 'expo-router'
 import React from 'react'
 import { View } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
+import { FlatList } from 'react-native-gesture-handler'
 import colors from 'tailwindcss/colors'
 import { useShallow } from 'zustand/react/shallow'
 
@@ -28,34 +29,43 @@ export default function index() {
   }
 
   return (
-    <View className="w-full flex-1 flex-col gap-4 px-4">
-      <View className="mt-4 flex flex-row items-baseline justify-between">
-        <Text className="text-2xl font-semibold capitalize">
-          Hello, {authUser?.email.split('@')[0]}!
-        </Text>
+    <View className="w-full flex-1 flex-col gap-4">
+      <FlatList
+        data={Array(3).fill('')}
+        showsVerticalScrollIndicator={true}
+        ItemSeparatorComponent={() => <View className="h-4" />}
+        ListFooterComponent={() => <View className="h-4" />}
+        keyExtractor={(_, index) => index.toString()}
+        stickyHeaderIndices={[0]}
+        ListHeaderComponent={() => (
+          <View className="flex flex-row items-baseline justify-between bg-white p-4">
+            <Text className="text-2xl font-semibold capitalize">
+              Hello, {authUser?.email.split('@')[0]}!
+            </Text>
 
-        <Button onPress={handleLogout} variant={'outline'} className="h-auto border-red-500">
-          <MaterialIcons name="logout" size={16} color={colors.red[500]} />
-          <Text className="text-xs text-red-500">Sign Out</Text>
-        </Button>
-      </View>
-
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View className="mb-4 flex gap-4">
-          {Array(5)
-            .fill('')
-            .map((_, i) => (
-              <HabitCard key={i} />
-            ))}
-        </View>
-      </ScrollView>
+            <Button
+              onPress={handleLogout}
+              variant={'outline'}
+              className="h-auto border-red-500"
+            >
+              <MaterialIcons name="logout" size={16} color={colors.red[500]} />
+              <Text className="text-xs text-red-500">Sign Out</Text>
+            </Button>
+          </View>
+        )}
+        renderItem={() => (
+          <SwipeableItem onDelete={() => {}} className="mx-4">
+            <HabitCard />
+          </SwipeableItem>
+        )}
+      />
     </View>
   )
 }
 
 function HabitCard() {
   return (
-    <Card className="p-2">
+    <Card className="p-4">
       <CardHeader className="p-2">
         <CardTitle>Meditate</CardTitle>
         <CardDescription className="text-gray-600">
