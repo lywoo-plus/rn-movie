@@ -2,30 +2,13 @@ import SwipeableItem from '@/components/SwipeableItem'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Text } from '@/components/ui/text'
-import { useAuthStore } from '@/stores/useAuthStore'
 import AntDesign from '@expo/vector-icons/AntDesign'
-import { useRouter } from 'expo-router'
 import React from 'react'
 import { View } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
 import colors from 'tailwindcss/colors'
-import { useShallow } from 'zustand/react/shallow'
 
 export default function index() {
-  const { authUser, logout } = useAuthStore(
-    useShallow((s) => ({
-      authUser: s.authUser,
-      logout: s.logout,
-    }))
-  )
-
-  const router = useRouter()
-
-  function handleLogout() {
-    logout()
-    router.replace('/(auth)')
-  }
-
   return (
     <View className="w-full flex-1 flex-col gap-4">
       <FlatList

@@ -1,8 +1,7 @@
-import { authService } from '@/api/authService'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Text } from '@/components/ui/text'
-import { useAuthStore } from '@/stores/useAuthStore'
+import { PocketBaseService } from '@/services/pocketbase.service'
 import Feather from '@expo/vector-icons/Feather'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -36,17 +35,21 @@ export default function AuthForm() {
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      email: 'lywoo@gmail.com',
-      password: 'arstarst',
+      email: 'lywoo.sroeng@gmail.com',
+      password: 'Lywoo@22091996',
     },
   })
 
-  const login = useAuthStore((s) => s.login)
-
   async function onSubmit(data: FormValues) {
     try {
-      const { email } = await authService.login(data)
-      login(email)
+      if (mode === 'signup') {
+        await PocketBaseService.signUp(data)
+        await PocketBaseService.signIn(data)
+        toast.success('Account created successfully')
+      } else {
+        await PocketBaseService.signIn(data)
+        toast.success('Logged in successfully')
+      }
       router.replace('/(protected)')
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Something went wrong'

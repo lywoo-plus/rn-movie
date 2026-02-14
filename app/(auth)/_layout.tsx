@@ -1,11 +1,11 @@
-import { useAuthStore } from '@/stores/useAuthStore'
+import pb from '@/lib/pocketbase'
 import { Redirect, Stack } from 'expo-router'
 import React from 'react'
 
 export default function _layout() {
-  const authUser = useAuthStore((s) => s.authUser)
+  const token = pb.authStore.token
 
-  if (authUser) {
+  if (token) {
     return <Redirect href="/(protected)" />
   }
 
