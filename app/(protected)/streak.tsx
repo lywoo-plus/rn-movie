@@ -1,6 +1,5 @@
 import SwipeableItem from '@/components/SwipeableItem'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Text } from '@/components/ui/text'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import React from 'react'
@@ -26,7 +25,8 @@ export default function index() {
         )}
         renderItem={() => (
           <SwipeableItem onDelete={() => {}} className="mx-4">
-            <HabitCard />
+            {/* <HabitCard /> */}
+            <Text>Habit</Text>
           </SwipeableItem>
         )}
       />
@@ -63,28 +63,6 @@ function TopStreakCard() {
           </View>
         </CardDescription>
       </CardHeader>
-    </Card>
-  )
-}
-
-function HabitCard() {
-  return (
-    <Card className="p-4">
-      <CardHeader className="p-2">
-        <CardTitle>Meditate</CardTitle>
-        <CardDescription className="text-gray-600">
-          5 minutes of meditation every morning
-        </CardDescription>
-      </CardHeader>
-      <CardFooter className="flex justify-between p-2">
-        <Badge variant={'secondary'} className="min-w-11 bg-yellow-200">
-          <AntDesign name="fire" size={16} color={colors.yellow[600]} />
-          <Text className="text-center capitalize text-yellow-800">0 day streak</Text>
-        </Badge>
-        <Badge variant={'secondary'} className="bg-blue-100">
-          <Text className="text-center capitalize text-blue-600">Daily</Text>
-        </Badge>
-      </CardFooter>
     </Card>
   )
 }

@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Text } from '@/components/ui/text'
+import { HabitService } from '@/services/habit.service'
 import Feather from '@expo/vector-icons/Feather'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'expo-router'
@@ -21,7 +22,7 @@ const schema = z.object({
   frequency: z.enum(frequencyValues),
 })
 
-type FormValues = z.infer<typeof schema>
+export type HabitFormValues = z.infer<typeof schema>
 
 // type Frequency = (typeof frequencyValues)[number]
 
@@ -32,7 +33,8 @@ export default function HabitForm() {
     control,
     formState: { errors, isSubmitting },
     handleSubmit,
-  } = useForm<FormValues>({
+    reset,
+  } = useForm<HabitFormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       title: '',
@@ -41,14 +43,12 @@ export default function HabitForm() {
     },
   })
 
-  async function onSubmit(data: FormValues) {
+  async function onSubmit(data: HabitFormValues) {
     try {
-      // TODO: add values to db
-
-      await new Promise((resolve) => {
-        setTimeout(() => resolve(null), 1000)
-      })
-      // router.replace('/(protected)')
+      await HabitService.createHabit(data)
+      toast.success('Habit created successfully')
+      reset()
+      router.navigate('/(protected)')
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Something went wrong'
       toast.error(message)

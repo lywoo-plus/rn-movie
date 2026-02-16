@@ -1,14 +1,14 @@
+import HabitCard from '@/components/HabitCard'
 import SwipeableItem from '@/components/SwipeableItem'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Text } from '@/components/ui/text'
 import pb from '@/lib/pocketbase'
+import { HabitService } from '@/services/habit.service'
 import { PocketBaseService } from '@/services/pocketbase.service'
-import AntDesign from '@expo/vector-icons/AntDesign'
+import { HabitRecord } from '@/types/pb-types'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { useRouter } from 'expo-router'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
 import colors from 'tailwindcss/colors'
@@ -23,13 +23,36 @@ export default function index() {
     router.replace('/(auth)')
   }
 
+  // TODO: use tanstack query
+  const [habits, setHabits] = useState<HabitRecord[]>([])
+
+  async function fetchHabits() {
+    try {
+      const habits = await HabitService.fetchHabits()
+      setHabits(habits)
+    } catch (error) {
+      console.log('🪲🪲🪲🪲🪲')
+      console.log(error)
+      console.log('🪲🪲🪲🪲🪲')
+    }
+  }
+
+  useEffect(() => {
+    fetchHabits()
+  }, [])
+
   return (
     <View className="w-full flex-1 flex-col gap-4">
       <FlatList
-        data={Array(3).fill('')}
+        data={habits}
         showsVerticalScrollIndicator={true}
+        ListEmptyComponent={() => (
+          <View className="flex-1 items-center justify-center">
+            <Text className="font-semibold">No habits yet</Text>
+          </View>
+        )}
         ItemSeparatorComponent={() => <View className="h-4" />}
-        ListFooterComponent={() => <View className="h-4" />}
+        ListFooterComponent={() => <View className="h-24" />}
         keyExtractor={(_, index) => index.toString()}
         stickyHeaderIndices={[0]}
         ListHeaderComponent={() => (
@@ -48,34 +71,12 @@ export default function index() {
             </Button>
           </View>
         )}
-        renderItem={() => (
+        renderItem={({ item }) => (
           <SwipeableItem onDelete={() => {}} className="mx-4">
-            <HabitCard />
+            <HabitCard {...item} />
           </SwipeableItem>
         )}
       />
     </View>
-  )
-}
-
-function HabitCard() {
-  return (
-    <Card className="p-4">
-      <CardHeader className="p-2">
-        <CardTitle>Meditate</CardTitle>
-        <CardDescription className="text-foreground">
-          5 minutes of meditation every morning
-        </CardDescription>
-      </CardHeader>
-      <CardFooter className="flex justify-between p-2">
-        <Badge variant={'secondary'} className="min-w-11 bg-yellow-200">
-          <AntDesign name="fire" size={16} color={colors.yellow[600]} />
-          <Text className="text-center capitalize text-yellow-800">0 day streak</Text>
-        </Badge>
-        <Badge variant={'secondary'} className="bg-blue-100">
-          <Text className="text-center capitalize text-blue-600">Daily</Text>
-        </Badge>
-      </CardFooter>
-    </Card>
   )
 }
