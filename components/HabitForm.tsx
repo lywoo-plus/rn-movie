@@ -9,6 +9,7 @@ import { useRouter } from 'expo-router'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { KeyboardAvoidingView, Platform, View } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
 import { toast } from 'sonner-native'
 import { z } from 'zod'
 
@@ -59,67 +60,71 @@ export default function HabitForm() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       className="flex-1"
     >
-      <View className="flex-1 justify-center gap-4 p-6">
-        <Text className="mb-4 text-center text-2xl font-semibold">Add Habit</Text>
+      <ScrollView contentContainerClassName="flex-1 item-center justify-center">
+        <View className="flex-1 justify-center gap-4 p-6">
+          <Text className="mb-4 text-center text-2xl font-semibold">Add Habit</Text>
 
-        <Controller
-          control={control}
-          name="title"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              placeholder="Title"
-              autoCapitalize="none"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-            />
+          <Controller
+            control={control}
+            name="title"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                placeholder="Title"
+                autoCapitalize="none"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+          />
+          {errors.title && (
+            <Text className="text-xs text-red-600">{errors.title.message}</Text>
           )}
-        />
-        {errors.title && <Text className="text-xs text-red-600">{errors.title.message}</Text>}
 
-        <Controller
-          control={control}
-          name="description"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              placeholder="Description"
-              autoCapitalize="none"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-            />
+          <Controller
+            control={control}
+            name="description"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                placeholder="Description"
+                autoCapitalize="none"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+          />
+          {errors.description && (
+            <Text className="text-xs text-red-600">{errors.description.message}</Text>
           )}
-        />
-        {errors.description && (
-          <Text className="text-xs text-red-600">{errors.description.message}</Text>
-        )}
 
-        <Controller
-          control={control}
-          name="frequency"
-          render={({ field: { onChange, value } }) => (
-            <RadioGroup
-              value={value}
-              onValueChange={onChange}
-              className="flex flex-row justify-between"
-            >
-              {frequencyValues.map((f) => (
-                <View key={f} className="flex flex-row items-center gap-3">
-                  <RadioGroupItem value={f} id={f} />
-                  <Label htmlFor={f} className="capitalize" onPress={() => onChange(f)}>
-                    {f}
-                  </Label>
-                </View>
-              ))}
-            </RadioGroup>
-          )}
-        />
+          <Controller
+            control={control}
+            name="frequency"
+            render={({ field: { onChange, value } }) => (
+              <RadioGroup
+                value={value}
+                onValueChange={onChange}
+                className="flex flex-row justify-between"
+              >
+                {frequencyValues.map((f) => (
+                  <View key={f} className="flex flex-row items-center gap-3">
+                    <RadioGroupItem value={f} id={f} />
+                    <Label htmlFor={f} className="capitalize" onPress={() => onChange(f)}>
+                      {f}
+                    </Label>
+                  </View>
+                ))}
+              </RadioGroup>
+            )}
+          />
 
-        <Button disabled={isSubmitting} className="w-full" onPress={handleSubmit(onSubmit)}>
-          <Feather name="plus" size={16} color={'white'} />
-          <Text>Add Habit</Text>
-        </Button>
-      </View>
+          <Button disabled={isSubmitting} className="w-full" onPress={handleSubmit(onSubmit)}>
+            <Feather name="plus" size={16} color={'white'} />
+            <Text>Add Habit</Text>
+          </Button>
+        </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   )
 }
