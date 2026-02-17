@@ -5,12 +5,12 @@ import { Text } from '@/components/ui/text'
 import pb from '@/lib/pocketbase'
 import { HabitService } from '@/services/habit.service'
 import { PocketBaseService } from '@/services/pocketbase.service'
-import { HabitRecord } from '@/types/pb-types'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'expo-router'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { View } from 'react-native'
-import { FlatList } from 'react-native-gesture-handler'
+import { FlatList, RefreshControl } from 'react-native-gesture-handler'
 import colors from 'tailwindcss/colors'
 
 export default function index() {
@@ -23,60 +23,68 @@ export default function index() {
     router.replace('/(auth)')
   }
 
-  // TODO: use tanstack query
-  const [habits, setHabits] = useState<HabitRecord[]>([])
+  const queryClient = useQueryClient()
 
-  async function fetchHabits() {
-    try {
-      const habits = await HabitService.fetchHabits()
-      setHabits(habits)
-    } catch (error) {
-      console.log('🪲🪲🪲🪲🪲')
-      console.log(error)
-      console.log('🪲🪲🪲🪲🪲')
-    }
-  }
+  const {
+    data: habits,
+    isLoading,
+    isError,
+    error,
+    refetch,
+    isFetching,
+  } = useQuery({
+    queryKey: ['habits'],
+    queryFn: HabitService.fetchHabits,
+  })
 
-  useEffect(() => {
-    fetchHabits()
-  }, [])
+  const { mutate: deleteHabit } = useMutation({
+    mutationKey: ['habit', 'delete'],
+    mutationFn: HabitService.deleteHabit,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['habits'] })
+    },
+  })
+
+  if (isLoading || isFetching) return <Text>Loading...</Text>
+
+  if (isError) return <Text>{error.message}</Text>
 
   return (
-    <View className="w-full flex-1 flex-col gap-4">
-      <FlatList
-        data={habits}
-        showsVerticalScrollIndicator={true}
-        ListEmptyComponent={() => (
-          <View className="flex-1 items-center justify-center">
-            <Text className="font-semibold">No habits yet</Text>
-          </View>
-        )}
-        ItemSeparatorComponent={() => <View className="h-4" />}
-        ListFooterComponent={() => <View className="h-24" />}
-        keyExtractor={(_, index) => index.toString()}
-        stickyHeaderIndices={[0]}
-        ListHeaderComponent={() => (
-          <View className="flex flex-row items-baseline justify-between bg-white p-4 dark:bg-black">
-            <Text className="text-2xl font-semibold capitalize">
-              Hello, {authUser?.email.split('@')[0]}!
-            </Text>
+    <FlatList
+      data={habits}
+      refreshing={isFetching}
+      refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+      showsVerticalScrollIndicator={true}
+      ListEmptyComponent={() => (
+        <View className="flex-1 items-center justify-center">
+          <Text className="font-semibold">No habits yet</Text>
+        </View>
+      )}
+      ItemSeparatorComponent={() => <View className="h-4" />}
+      ListFooterComponent={() => <View className="h-24" />}
+      keyExtractor={(_, index) => index.toString()}
+      stickyHeaderIndices={[0]}
+      ListHeaderComponent={() => (
+        <View className="flex flex-row items-baseline justify-between bg-white p-4 dark:bg-black">
+          <Text className="text-2xl font-semibold capitalize">
+            Hello, {authUser?.email.split('@')[0]}!
+          </Text>
 
-            <Button
-              onPress={handleLogout}
-              variant={'outline'}
-              className="h-auto !border-red-500"
-            >
-              <MaterialIcons name="logout" size={16} color={colors.red[500]} />
-              <Text className="text-xs text-red-500">Sign Out</Text>
-            </Button>
-          </View>
-        )}
-        renderItem={({ item }) => (
-          <SwipeableItem onDelete={() => {}} className="mx-4">
-            <HabitCard {...item} />
-          </SwipeableItem>
-        )}
-      />
-    </View>
+          <Button
+            onPress={handleLogout}
+            variant={'outline'}
+            className="h-auto !border-red-500"
+          >
+            <MaterialIcons name="logout" size={16} color={colors.red[500]} />
+            <Text className="text-xs text-red-500">Sign Out</Text>
+          </Button>
+        </View>
+      )}
+      renderItem={({ item }) => (
+        <SwipeableItem onDelete={() => deleteHabit(item.id)} className="mx-4">
+          <HabitCard {...item} />
+        </SwipeableItem>
+      )}
+    />
   )
 }

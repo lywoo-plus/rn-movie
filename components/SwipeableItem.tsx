@@ -8,10 +8,12 @@ export default function SwipeableItem({
   className,
   children,
   onDelete,
+  onComplete,
 }: {
   className?: string
   children: React.ReactNode
-  onDelete: () => void
+  onDelete?: () => void
+  onComplete?: () => void
 }) {
   const swipeableRef = useRef<React.ComponentRef<typeof ReanimatedSwipeable>>(null)
 
@@ -19,7 +21,7 @@ export default function SwipeableItem({
     return (
       <TouchableOpacity
         onPress={() => {
-          onDelete()
+          onDelete?.()
           swipeableRef.current?.close()
         }}
         className="flex flex-1 flex-row items-center justify-start gap-2 rounded-xl bg-red-600 p-4"
@@ -34,7 +36,7 @@ export default function SwipeableItem({
     return (
       <TouchableOpacity
         onPress={() => {
-          onDelete()
+          onComplete?.()
           swipeableRef.current?.close()
         }}
         className="flex flex-1 flex-row items-center justify-end gap-2 rounded-xl bg-green-600 p-4"

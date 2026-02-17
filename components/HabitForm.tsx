@@ -6,6 +6,7 @@ import { Text } from '@/components/ui/text'
 import { HabitService } from '@/services/habit.service'
 import Feather from '@expo/vector-icons/Feather'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'expo-router'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -31,7 +32,7 @@ export default function HabitForm() {
 
   const {
     control,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     handleSubmit,
     reset,
   } = useForm<HabitFormValues>({
@@ -43,12 +44,22 @@ export default function HabitForm() {
     },
   })
 
-  async function onSubmit(data: HabitFormValues) {
-    try {
-      await HabitService.createHabit(data)
+  const queryClient = useQueryClient()
+
+  const { mutate: createHabit, isPending } = useMutation({
+    mutationKey: ['habit', 'create'],
+    mutationFn: HabitService.createHabit,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['habits'] })
       toast.success('Habit created successfully')
-      reset()
       router.navigate('/(protected)')
+      reset()
+    },
+  })
+
+  function onSubmit(data: HabitFormValues) {
+    try {
+      createHabit(data)
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Something went wrong'
       toast.error(message)
@@ -119,7 +130,7 @@ export default function HabitForm() {
             )}
           />
 
-          <Button disabled={isSubmitting} className="w-full" onPress={handleSubmit(onSubmit)}>
+          <Button disabled={isPending} className="w-full" onPress={handleSubmit(onSubmit)}>
             <Feather name="plus" size={16} color={'white'} />
             <Text>Add Habit</Text>
           </Button>

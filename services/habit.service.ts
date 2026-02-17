@@ -13,4 +13,8 @@ export const HabitService = {
   async fetchHabits() {
     return pb.collection('habit').getFullList({ sort: '-created' })
   },
+
+  async deleteHabit(id: string) {
+    return pb.collection('habit').delete(id)
+  },
 }
