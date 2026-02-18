@@ -19,13 +19,7 @@ export default function SwipeableItem({
 
   function renderLeftActions() {
     return (
-      <TouchableOpacity
-        onPress={() => {
-          onDelete?.()
-          swipeableRef.current?.close()
-        }}
-        className="flex flex-1 flex-row items-center justify-start gap-2 rounded-xl bg-red-600 p-4"
-      >
+      <TouchableOpacity className="flex flex-1 flex-row items-center justify-start gap-2 rounded-xl bg-red-600 p-4">
         <MaterialIcons name="delete-forever" size={32} color="white" />
         <Text className="font-semibold text-white">Delete</Text>
       </TouchableOpacity>
@@ -34,13 +28,7 @@ export default function SwipeableItem({
 
   function renderRightActions() {
     return (
-      <TouchableOpacity
-        onPress={() => {
-          onComplete?.()
-          swipeableRef.current?.close()
-        }}
-        className="flex flex-1 flex-row items-center justify-end gap-2 rounded-xl bg-green-600 p-4"
-      >
+      <TouchableOpacity className="flex flex-1 flex-row items-center justify-end gap-2 rounded-xl bg-green-600 p-4">
         <Text className="font-semibold text-white">Complete</Text>
         <MaterialIcons name="check-circle" size={32} color="white" />
       </TouchableOpacity>
@@ -55,6 +43,14 @@ export default function SwipeableItem({
         renderLeftActions={renderLeftActions}
         overshootRight={false}
         overshootLeft={false}
+        onSwipeableOpen={(direction) => {
+          if (direction === 'right') {
+            onDelete?.()
+          } else {
+            onComplete?.()
+          }
+          swipeableRef.current?.close()
+        }}
       >
         {children}
       </ReanimatedSwipeable>

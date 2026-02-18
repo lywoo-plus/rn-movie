@@ -11,10 +11,29 @@ export const HabitService = {
   },
 
   async fetchHabits() {
-    return pb.collection('habit').getFullList({ sort: '-created' })
-  },
+    const todayDate = new Date().toISOString().split('T')[0]
 
+    return pb.collection('habit').getFullList({
+      sort: '-updated',
+      filter: `last_completed_date != "${todayDate}" || last_completed_date = null`,
+    })
+  },
   async deleteHabit(id: string) {
     return pb.collection('habit').delete(id)
+  },
+
+  async completeHabit(id: string) {
+    await pb.collection('habit_completed').create({
+      habit_id: id,
+      user_id: pb.authStore.record?.id,
+    })
+
+    const foundHabit = await pb.collection('habit').getOne(id)
+    if (foundHabit) {
+      await pb.collection('habit').update(id, {
+        streak_count: foundHabit.streak_count + 1,
+        last_completed_date: new Date().toISOString().split('T')[0],
+      })
+    }
   },
 }

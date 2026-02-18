@@ -45,9 +45,17 @@ export default function index() {
     },
   })
 
+  const { mutate: completeHabit } = useMutation({
+    mutationKey: ['habit', 'complete'],
+    mutationFn: HabitService.completeHabit,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['habits'] })
+    },
+  })
+
   if (isLoading || isFetching) return <Text>Loading...</Text>
 
-  if (isError) return <Text>{error.message}</Text>
+  if (isError) return <Text className="cursor-pointer">{error.message}</Text>
 
   return (
     <FlatList
@@ -56,9 +64,12 @@ export default function index() {
       refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
       showsVerticalScrollIndicator={true}
       ListEmptyComponent={() => (
-        <View className="flex-1 items-center justify-center">
-          <Text className="font-semibold">No habits yet</Text>
-        </View>
+        <HabitCard
+          title="No habits found"
+          description="Create a habit to get started"
+          className="mx-4"
+          onTouchEndCapture={() => router.navigate('/(protected)/add-habit')}
+        />
       )}
       ItemSeparatorComponent={() => <View className="h-4" />}
       ListFooterComponent={() => <View className="h-24" />}
@@ -81,7 +92,11 @@ export default function index() {
         </View>
       )}
       renderItem={({ item }) => (
-        <SwipeableItem onDelete={() => deleteHabit(item.id)} className="mx-4">
+        <SwipeableItem
+          onDelete={() => deleteHabit(item.id)}
+          onComplete={() => completeHabit(item.id)}
+          className="mx-4"
+        >
           <HabitCard {...item} />
         </SwipeableItem>
       )}

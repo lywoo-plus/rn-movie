@@ -12,6 +12,7 @@ export enum Collections {
 	Otps = "_otps",
 	Superusers = "_superusers",
 	Habit = "habit",
+	HabitCompleted = "habit_completed",
 	Users = "users",
 }
 
@@ -101,11 +102,19 @@ export enum HabitFrequencyOptions {
 export type HabitRecord = {
 	created: IsoAutoDateString
 	description: string
-	frequency?: HabitFrequencyOptions
+	frequency: HabitFrequencyOptions
 	id: string
-	last_completed: IsoAutoDateString
+	last_completed_date: string
 	streak_count?: number
 	title: string
+	updated: IsoAutoDateString
+	user_id: RecordIdString
+}
+
+export type HabitCompletedRecord = {
+	completed_at: IsoAutoDateString
+	habit_id: RecordIdString
+	id: string
 	updated: IsoAutoDateString
 	user_id: RecordIdString
 }
@@ -130,6 +139,7 @@ export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemF
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
 export type HabitResponse<Texpand = unknown> = Required<HabitRecord> & BaseSystemFields<Texpand>
+export type HabitCompletedResponse<Texpand = unknown> = Required<HabitCompletedRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
@@ -141,6 +151,7 @@ export type CollectionRecords = {
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
 	habit: HabitRecord
+	habit_completed: HabitCompletedRecord
 	users: UsersRecord
 }
 
@@ -151,6 +162,7 @@ export type CollectionResponses = {
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
 	habit: HabitResponse
+	habit_completed: HabitCompletedResponse
 	users: UsersResponse
 }
 
