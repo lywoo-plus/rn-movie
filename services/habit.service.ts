@@ -18,6 +18,20 @@ export const HabitService = {
       filter: `last_completed_date != "${todayDate}" || last_completed_date = null`,
     })
   },
+
+  async fetchTopStreakHabits() {
+    return await pb.collection('habit').getList(1, 3, {
+      sort: '-streak_count',
+    })
+  },
+
+  async fetchCompletedHabits() {
+    return pb.collection('habit').getFullList({
+      sort: '-updated',
+      filter: 'last_completed_date != null',
+    })
+  },
+
   async deleteHabit(id: string) {
     return pb.collection('habit').delete(id)
   },

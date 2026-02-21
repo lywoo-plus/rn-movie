@@ -11,6 +11,7 @@ import { useRouter } from 'expo-router'
 import React from 'react'
 import { View } from 'react-native'
 import { FlatList, RefreshControl } from 'react-native-gesture-handler'
+import { toast } from 'sonner-native'
 import colors from 'tailwindcss/colors'
 
 export default function index() {
@@ -27,7 +28,6 @@ export default function index() {
 
   const {
     data: habits,
-    isLoading,
     isError,
     error,
     refetch,
@@ -42,6 +42,7 @@ export default function index() {
     mutationFn: HabitService.deleteHabit,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['habits'] })
+      toast.success('Habit deleted successfully')
     },
   })
 
@@ -50,10 +51,11 @@ export default function index() {
     mutationFn: HabitService.completeHabit,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['habits'] })
+      queryClient.invalidateQueries({ queryKey: ['completed-habits'] })
+      queryClient.invalidateQueries({ queryKey: ['top-streak-habits'] })
+      toast.success('Habit completed successfully')
     },
   })
-
-  if (isLoading || isFetching) return <Text>Loading...</Text>
 
   if (isError) return <Text className="cursor-pointer">{error.message}</Text>
 
